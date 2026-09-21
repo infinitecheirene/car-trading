@@ -241,25 +241,30 @@ export default function ShowroomPage() {
                 <section className="mx-auto max-w-7xl px-4 pb-20 sm:px-6 lg:px-8">
                     <div className="rounded-[28px] border border-[#BF980D]/20 bg-[#120f0d] p-6 sm:p-8">
                         <div className="flex items-center gap-3">
-                            <Sparkles className="text-[#BF980D]" size={18} />
-                            <h3 className="text-xl font-bold text-white">Why drivers choose AutoTrade</h3>
+                            <h3 className="text-2xl font-bold text-white">Why drivers choose AutoTrade?</h3>
                         </div>
 
                         <div className="mt-6 grid gap-4 md:grid-cols-3">
                             <div className="rounded-2xl border border-white/10 bg-white/5 p-5">
-                                <Gauge className="text-[#BF980D]" size={18} />
-                                <h4 className="mt-4 text-lg font-bold text-white">Inspected quality</h4>
-                                <p className="mt-2 text-sm leading-6 text-zinc-300">Every vehicle is reviewed for condition, safety, and performance before it reaches the showroom floor.</p>
+                                <div className="flex gap-2 items-center">
+                                    <Gauge className="text-[#BF980D]" size={22} />
+                                    <h4 className="text-xl font-bold text-white">Inspected quality</h4>
+                                </div>
+                                <p className="mt-2 text-md leading-6 text-zinc-300">Every vehicle is reviewed for condition, safety, and performance before it reaches the showroom floor.</p>
                             </div>
                             <div className="rounded-2xl border border-white/10 bg-white/5 p-5">
-                                <Sparkles className="text-[#BF980D]" size={18} />
-                                <h4 className="mt-4 text-lg font-bold text-white">Transparent pricing</h4>
-                                <p className="mt-2 text-sm leading-6 text-zinc-300">No hidden surprises—just clear value, competitive pricing, and straightforward buying guidance.</p>
+                                <div className="flex gap-2 items-center">
+                                <Sparkles className="text-[#BF980D]" size={22} />
+                                <h4 className="text-xl font-bold text-white">Transparent pricing</h4>
+                                </div>
+                                <p className="mt-2 text-md leading-6 text-zinc-300">No hidden surprises—just clear value, competitive pricing, and straightforward buying guidance.</p>
                             </div>
                             <div className="rounded-2xl border border-white/10 bg-white/5 p-5">
-                                <MapPin className="text-[#BF980D]" size={18} />
-                                <h4 className="mt-4 text-lg font-bold text-white">Local experts</h4>
-                                <p className="mt-2 text-sm leading-6 text-zinc-300">Our team helps you compare the right fit for your lifestyle, goals, and long-term value.</p>
+                                <div className="flex gap-2 items-center">
+                                    <MapPin className="text-[#BF980D]" size={22} />
+                                    <h4 className="text-xl font-bold text-white">Local experts</h4>
+                                </div>
+                                <p className="mt-2 text-md leading-6 text-zinc-300">Our team helps you compare the right fit for your lifestyle, goals, and long-term value.</p>
                             </div>
                         </div>
                     </div>
