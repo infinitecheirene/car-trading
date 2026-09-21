@@ -2,8 +2,8 @@
 
 import Image from "next/image";
 import Link from "next/link";
-import { ArrowRight, Gauge, MapPin, Search, SlidersHorizontal, Sparkles, X } from "lucide-react";
-import { useMemo, useState } from "react";
+import { ArrowRight, Gauge, MapPin, RotateCcw, Search, SlidersHorizontal, Sparkles, X } from "lucide-react";
+import { useEffect, useMemo, useState } from "react";
 
 import Navbar from "../../components/layout/navbar";
 import Footer from "../../components/layout/footer";
@@ -16,6 +16,26 @@ export default function ShowroomPage() {
     const [selectedModel, setSelectedModel] = useState("all");
     const [sortOrder, setSortOrder] = useState("newest");
     const [priceRange, setPriceRange] = useState("all");
+    const [isLoading, setIsLoading] = useState(true);
+    const [loadError, setLoadError] = useState<string | null>(null);
+
+    useEffect(() => {
+        const timer = window.setTimeout(() => {
+            try {
+                if (!cars || cars.length === 0) {
+                    throw new Error("Inventory unavailable");
+                }
+
+                setLoadError(null);
+            } catch {
+                setLoadError("We couldn’t load the showroom inventory right now. Please refresh the page or contact our team for assistance.");
+            } finally {
+                setIsLoading(false);
+            }
+        }, 900);
+
+        return () => window.clearTimeout(timer);
+    }, []);
 
     const modelOptions = ["all", ...cars.map((car) => car.name)];
 
@@ -73,6 +93,25 @@ export default function ShowroomPage() {
         setSelectedModel("all");
         setSortOrder("newest");
         setPriceRange("all");
+    };
+
+    const handleRetry = () => {
+        setIsLoading(true);
+        setLoadError(null);
+
+        window.setTimeout(() => {
+            try {
+                if (!cars || cars.length === 0) {
+                    throw new Error("Inventory unavailable");
+                }
+
+                setLoadError(null);
+            } catch {
+                setLoadError("We couldn’t load the showroom inventory right now. Please refresh the page or contact our team for assistance.");
+            } finally {
+                setIsLoading(false);
+            }
+        }, 700);
     };
 
     return (
@@ -173,10 +212,39 @@ export default function ShowroomPage() {
                         </div>
                     </div>
 
-                    {filteredCars.length === 0 ? (
+                    {isLoading ? (
+                        <div className="rounded-[28px] border border-white/10 bg-[#120f0d] px-6 py-16 text-center shadow-[0_20px_60px_rgba(0,0,0,0.2)]">
+                            <div className="mx-auto flex h-16 w-16 items-center justify-center rounded-full border border-[#BF980D]/30 bg-[#BF980D]/10">
+                                <div className="h-8 w-8 animate-spin rounded-full border-2 border-[#BF980D]/40 border-t-[#BF980D]" />
+                            </div>
+                            <p className="mt-6 text-2xl font-bold text-white">Loading inventory...</p>
+                            <p className="mt-2 text-sm text-zinc-400">Preparing the latest vehicles for you.</p>
+                        </div>
+                    ) : loadError ? (
+                        <div className="rounded-[28px] border border-red-500/30 bg-[#160f0f] px-6 py-16 text-center shadow-[0_20px_60px_rgba(0,0,0,0.2)]">
+                            <p className="text-2xl font-bold text-white">Something went wrong</p>
+                            <p className="mt-3 max-w-xl mx-auto text-sm leading-6 text-zinc-300">{loadError}</p>
+                            <button
+                                type="button"
+                                onClick={handleRetry}
+                                className="mt-6 inline-flex items-center gap-2 rounded-full bg-[#BF980D] px-5 py-3 text-sm font-semibold text-black transition-all duration-300 hover:bg-[#d4ad20]"
+                            >
+                                <RotateCcw size={16} />
+                                Retry
+                            </button>
+                        </div>
+                    ) : filteredCars.length === 0 ? (
                         <div className="rounded-[28px] border border-dashed border-white/15 bg-[#120f0d] px-6 py-16 text-center">
                             <p className="text-xl font-semibold text-white">No matching vehicles found</p>
-                            <p className="mt-2 text-sm text-zinc-400">Try changing your search or clearing the filters.</p>
+                            <p className="mt-2 text-sm text-zinc-400">Try adjusting your filters or searching for a different model.</p>
+                            <button
+                                type="button"
+                                onClick={clearFilters}
+                                className="mt-6 inline-flex items-center gap-2 rounded-full border border-[#BF980D]/50 bg-[#BF980D]/10 px-5 py-3 text-sm font-semibold text-[#F3D77A] transition-all duration-300 hover:border-[#BF980D] hover:bg-[#BF980D]/20"
+                            >
+                                <X size={15} />
+                                Clear filters
+                            </button>
                         </div>
                     ) : (
                         <div className="grid gap-6 md:grid-cols-2 xl:grid-cols-4">

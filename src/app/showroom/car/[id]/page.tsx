@@ -2,8 +2,8 @@
 
 import Image from "next/image";
 import Link from "next/link";
-import { ArrowLeft, ArrowRight, Gauge, MapPin, Settings2, Sparkles, Star } from "lucide-react";
-import { notFound } from "next/navigation";
+import { ArrowLeft, ArrowRight, Gauge, MapPin, RotateCcw, Settings2, Sparkles, Star } from "lucide-react";
+import { notFound, useParams } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
 
 import Navbar from "../../../../components/layout/navbar";
@@ -159,16 +159,90 @@ function CarGallery({ carName, carImage, images }: { carName: string; carImage: 
     );
 }
 
-export default async function CarDetailsPage({ params }: { params: Promise<{ id: string }> }) {
-    const { id } = await params;
+export default function CarDetailsPage() {
+    const params = useParams<{ id: string }>();
+    const id = params?.id;
+    const [isLoading, setIsLoading] = useState(true);
+    const [loadError, setLoadError] = useState<string | null>(null);
 
-    const car = cars.find((item) => item.id === Number(id));
+    useEffect(() => {
+        const timer = window.setTimeout(() => {
+            try {
+                if (!id) {
+                    throw new Error("Vehicle ID is missing");
+                }
 
-    if (!car) {
-        notFound();
+                const car = cars.find((item) => item.id === Number(id));
+
+                if (!car) {
+                    throw new Error("Vehicle not found");
+                }
+
+                setLoadError(null);
+            } catch {
+                setLoadError("We couldn’t load this vehicle details page right now. Please try again or browse the showroom.");
+            } finally {
+                setIsLoading(false);
+            }
+        }, 700);
+
+        return () => window.clearTimeout(timer);
+    }, [id]);
+
+    const car = id ? cars.find((item) => item.id === Number(id)) : undefined;
+    const carImage = car?.image || galleryImages[0];
+
+    if (isLoading) {
+        return (
+            <>
+                <Navbar />
+                <main className="flex min-h-screen items-center justify-center bg-[#191610] px-4 text-white">
+                    <div className="w-full max-w-md rounded-[28px] border border-white/10 bg-[#120f0d] px-6 py-12 text-center shadow-[0_25px_80px_rgba(0,0,0,0.35)]">
+                        <div className="mx-auto flex h-16 w-16 items-center justify-center rounded-full border border-[#BF980D]/30 bg-[#BF980D]/10">
+                            <div className="h-8 w-8 animate-spin rounded-full border-2 border-[#BF980D]/40 border-t-[#BF980D]" />
+                        </div>
+                        <p className="mt-6 text-2xl font-bold text-white">Loading vehicle</p>
+                        <p className="mt-2 text-sm text-zinc-400">Preparing the latest details for you.</p>
+                    </div>
+                </main>
+                <Footer />
+            </>
+        );
     }
 
-    const carImage = car.image || galleryImages[0];
+    if (loadError || !car) {
+        return (
+            <>
+                <Navbar />
+                <main className="flex min-h-screen items-center justify-center bg-[#191610] px-4 text-white">
+                    <div className="w-full max-w-lg rounded-[28px] border border-red-500/30 bg-[#160f0f] px-6 py-12 text-center shadow-[0_25px_80px_rgba(0,0,0,0.35)]">
+                        <p className="text-sm font-semibold uppercase tracking-[0.3em] text-[#BF980D]">Vehicle unavailable</p>
+                        <h1 className="mt-5 text-3xl font-black tracking-tight text-white">We couldn’t find this car</h1>
+                        <p className="mt-4 text-sm leading-7 text-zinc-300">
+                            {loadError || "The vehicle you’re looking for may have been sold or moved. Explore our current inventory and we’ll help you find a great alternative."}
+                        </p>
+                        <div className="mt-7 flex flex-col justify-center gap-3 sm:flex-row">
+                            <Link
+                                href="/showroom"
+                                className="inline-flex items-center justify-center rounded-full bg-[#BF980D] px-5 py-3 text-sm font-semibold text-black transition-all duration-300 hover:bg-[#d4ad20]"
+                            >
+                                Browse showroom
+                            </Link>
+                            <button
+                                type="button"
+                                onClick={() => window.location.reload()}
+                                className="inline-flex items-center justify-center gap-2 rounded-full border border-white/15 bg-white/5 px-5 py-3 text-sm font-semibold text-white transition-all duration-300 hover:border-[#BF980D]/60 hover:bg-white/10"
+                            >
+                                <RotateCcw size={16} />
+                                Retry
+                            </button>
+                        </div>
+                    </div>
+                </main>
+                <Footer />
+            </>
+        );
+    }
 
     return (
         <>

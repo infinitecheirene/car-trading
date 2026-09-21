@@ -22,6 +22,8 @@ const InstagramIcon = ({ className }: { className?: string }) => (
     </svg>
 )
 
+const focusRing = "focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#BF980D]";
+
 export default function Footer() {
     return (
         <footer className="border-t bg-[#051524]/80 text-white border-[#BF980D]">
@@ -31,19 +33,17 @@ export default function Footer() {
                     {/* Brand */}
                     <div className="lg:col-span-1">
                         {/* Logo */}
-                        <Link
-                            href="/"
-                            className="group flex items-center gap-3"
-                        >
-                            <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-[#BF980D]/70 text-white/80 transition-transform duration-300 group-hover:scale-105">
-                                <CarFront size={22} strokeWidth={2.5} />
+                        <Link href="/" className={`group flex items-center gap-2.5 sm:gap-3 ${focusRing}`}>
+                            <div className="flex h-10 w-10 sm:h-11 sm:w-11 items-center justify-center rounded-xl bg-[#BF980D] text-black shadow-[0_10px_30px_rgba(191,152,13,0.22)] transition-all duration-300 group-hover:scale-105 group-hover:shadow-[0_12px_35px_rgba(191,152,13,0.35)]">
+                                <CarFront size={21} strokeWidth={2.5} />
                             </div>
 
                             <div className="leading-none">
-                                <div className="text-lg font-black tracking-tight text-zinc-100">
+                                <div className="text-base font-black tracking-tight text-white sm:text-lg">
                                     Auto<span className="text-zinc-400">Trade</span>
                                 </div>
-                                <div className="mt-1 text-[9px] font-medium uppercase tracking-[0.25em] text-[#BF980D]">
+
+                                <div className="mt-1 text-[8px] font-medium uppercase tracking-[0.25em] text-[#BF980D] sm:text-[9px]">
                                     Automotive
                                 </div>
                             </div>

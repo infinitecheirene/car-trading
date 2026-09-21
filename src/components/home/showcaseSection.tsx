@@ -145,7 +145,7 @@ export default function ShowcaseSection() {
                     <div className="group mt-6 inline-block">
                         <Link
                             href="/showroom"
-                            className="flex items-center gap-2 text-sm font-semibold text-[#BF980D] underline decoration-transparent decoration-2 underline-offset-4 transition-all duration-300 hover:decoration-[#BF980D]"
+                            className="flex items-center gap-2 text-lg font-semibold text-[#BF980D] underline decoration-transparent decoration-2 underline-offset-4 transition-all duration-300 hover:decoration-[#BF980D]"
                         >
                             Visit Showroom
 
@@ -163,7 +163,7 @@ export default function ShowcaseSection() {
                         type="button"
                         onClick={goPrevious}
                         aria-label="Previous vehicle"
-                        className="absolute left-1 top-1/2 z-50 flex h-11 w-11 -translate-y-1/2 items-center justify-center rounded-full border border-white/15 bg-black/60 text-white backdrop-blur-xl transition-all duration-300 hover:scale-110 hover:border-[#BF980D] hover:bg-[#BF980D] hover:text-black sm:left-5 sm:h-12 sm:w-12 lg:left-10"
+                        className="absolute left-1 top-1/2 z-20 flex h-11 w-11 -translate-y-1/2 items-center justify-center rounded-full border border-white/15 bg-black/60 text-white backdrop-blur-xl transition-all duration-300 hover:scale-110 hover:border-[#BF980D] hover:bg-[#BF980D] hover:text-black sm:left-5 sm:h-12 sm:w-12 lg:left-10"
                     >
                         <ArrowLeft size={19} />
                     </button>
@@ -172,7 +172,7 @@ export default function ShowcaseSection() {
                         type="button"
                         onClick={goNext}
                         aria-label="Next vehicle"
-                        className="absolute right-1 top-1/2 z-50 flex h-11 w-11 -translate-y-1/2 items-center justify-center rounded-full border border-white/15 bg-black/60 text-white backdrop-blur-xl transition-all duration-300 hover:scale-110 hover:border-[#BF980D] hover:bg-[#BF980D] hover:text-black sm:right-5 sm:h-12 sm:w-12 lg:right-10"
+                        className="absolute right-1 top-1/2 z-20 flex h-11 w-11 -translate-y-1/2 items-center justify-center rounded-full border border-white/15 bg-black/60 text-white backdrop-blur-xl transition-all duration-300 hover:scale-110 hover:border-[#BF980D] hover:bg-[#BF980D] hover:text-black sm:right-5 sm:h-12 sm:w-12 lg:right-10"
                     >
                         <ArrowRight size={19} />
                     </button>
