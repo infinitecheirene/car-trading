@@ -118,10 +118,10 @@ export default function Footer() {
 
                             <li>
                                 <Link
-                                    href="/sell-your-car"
+                                    href="/sell-trade"
                                     className="text-zinc-400 transition-colors hover:text-[#BF980D]"
                                 >
-                                    Sell Your Car
+                                    Sell / Trade Car
                                 </Link>
                             </li>
 
@@ -163,19 +163,10 @@ export default function Footer() {
 
                             <li>
                                 <Link
-                                    href="/sell-your-car"
+                                    href="/sell-trade"
                                     className="text-zinc-400 transition-colors hover:text-[#BF980D]"
                                 >
                                     Vehicle Trade-In
-                                </Link>
-                            </li>
-
-                            <li>
-                                <Link
-                                    href="/financing"
-                                    className="text-zinc-400 transition-colors hover:text-[#BF980D]"
-                                >
-                                    Financing
                                 </Link>
                             </li>
 

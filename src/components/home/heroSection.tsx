@@ -111,7 +111,7 @@ export default function HeroSection() {
 
                         {/* Secondary CTA */}
                         <Link
-                            href="/sell-your-car"
+                            href="/sell-trade"
                             className="inline-flex items-center justify-center gap-3 rounded-full border border-[#BF980D]/70 bg-black/30 px-7 py-4 text-sm font-semibold text-white backdrop-blur-md transition-all duration-300 hover:border-[#BF980D] hover:bg-[#BF980D]/15"
                         >
                             Sell / Trade Your Car
