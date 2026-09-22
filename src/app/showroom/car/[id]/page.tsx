@@ -2,55 +2,37 @@
 
 import Image from "next/image";
 import Link from "next/link";
-import { ArrowLeft, ArrowRight, Gauge, MapPin, RotateCcw, Settings2, Sparkles, Star } from "lucide-react";
+import { ArrowLeft, ArrowRight, Gauge, MapPin, Pause, Play, RotateCcw, Settings2, Sparkles, Star } from "lucide-react";
 import { notFound, useParams } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
 
 import Navbar from "../../../../components/layout/navbar";
 import Footer from "../../../../components/layout/footer";
 import { cars } from "../../../../data/cars";
+import { showroomGalleryMedia, type GalleryMedia } from "../../../../data/gallery-media";
 
-type Slide = {
-    src: string;
-    alt: string;
-    fit?: "contain" | "cover";
-};
+type Slide = GalleryMedia;
 
 const focusRing = "focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#BF980D]";
 
-const galleryImages = [
-    "/showroom-gallery-1.jpg",
-    "/showroom-gallery-2.jpg",
-    "/showroom-gallery-3.jpg",
-    "/showroom-gallery-4.jpg",
-    "/showroom-gallery-5.jpg",
-    "/showroom-gallery-6.jpg",
-];
-
-function CarGallery({ carName, carImage, images }: { carName: string; carImage: string; images: string[] }) {
-    const slides: Slide[] = [
-        { src: carImage, alt: `${carName} main view`, fit: "contain" },
-        ...images.map((src, index) => ({ src, alt: `${carName} gallery photo ${index + 1}`, fit: "cover" as const })),
-    ];
+function CarGallery({ carName, carImage, media }: { carName: string; carImage: string; media: GalleryMedia[] }) {
+    const slides: Slide[] = media.length > 0 ? [...media] : [{ type: "image", src: carImage, alt: `${carName} main view` }];
 
     const [index, setIndex] = useState(0);
     const [dragX, setDragX] = useState(0);
     const [isDragging, setIsDragging] = useState(false);
+    const [isPlaying, setIsPlaying] = useState(false);
 
     const pointerStartX = useRef<number | null>(null);
     const stripRef = useRef<HTMLDivElement | null>(null);
     const thumbRefs = useRef<Array<HTMLButtonElement | null>>([]);
+    const videoRefs = useRef<Array<HTMLVideoElement | null>>([]);
 
     const last = slides.length - 1;
-
-    /* ---------------------------------------------
-       Change slide
-    --------------------------------------------- */
+    const activeSlide = slides[index];
 
     const goNext = () => setIndex((current) => (current >= last ? 0 : current + 1));
     const goPrevious = () => setIndex((current) => (current <= 0 ? last : current - 1));
-
-
 
     const handleKeyDown = (event: React.KeyboardEvent<HTMLDivElement>) => {
         if (event.key === "ArrowRight") { event.preventDefault(); goNext(); }
@@ -94,41 +76,106 @@ function CarGallery({ carName, carImage, images }: { carName: string; carImage: 
         setIsDragging(false);
     };
 
+    const togglePlayback = () => {
+        const video = videoRefs.current[index];
+        if (!video) return;
+        if (video.paused) {
+            video.play();
+            setIsPlaying(true);
+        } else {
+            video.pause();
+            setIsPlaying(false);
+        }
+    };
+
     useEffect(() => {
         const activeThumb = thumbRefs.current[index];
-        if (!activeThumb) return;
-        activeThumb.scrollIntoView({ behavior: "smooth", block: "nearest", inline: "center" });
+        if (activeThumb) activeThumb.scrollIntoView({ behavior: "smooth", block: "nearest", inline: "center" });
+
+        // Pause every video except the active one; autoplay short clips, leave the long video paused.
+        slides.forEach((slide, i) => {
+            const video = videoRefs.current[i];
+            if (!video || slide.type !== "video") return;
+
+            if (i !== index) {
+                video.pause();
+                video.currentTime = 0;
+                return;
+            }
+
+            if (slide.length === "short") {
+                video.play().catch(() => {});
+                setIsPlaying(true);
+            } else {
+                setIsPlaying(false);
+            }
+        });
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [index]);
 
     return (
         <div className="overflow-hidden rounded-[28px] border border-white/10 bg-[#0f0d0a] p-3 shadow-[0_30px_90px_rgba(0,0,0,0.45)] sm:p-5 lg:p-6">
-            {/* Image */}
-            <div role="region" aria-roledescription="carousel" aria-label={`${carName} photos`} tabIndex={0} onKeyDown={handleKeyDown} className={`relative overflow-hidden rounded-[22px] bg-[#111111] ${focusRing}`}>
+            {/* Media */}
+            <div role="region" aria-roledescription="carousel" aria-label={`${carName} photos and videos`} tabIndex={0} onKeyDown={handleKeyDown} className={`relative overflow-hidden rounded-[22px] bg-[#111111] ${focusRing}`}>
                 {/* Sliding area */}
                 <div onPointerDown={handlePointerDown} onPointerMove={handlePointerMove} onPointerUp={handlePointerUp} onPointerCancel={handlePointerCancel} className={`touch-pan-y select-none ${isDragging ? "cursor-grabbing" : "cursor-grab"}`}>
                     <div className="flex will-change-transform" style={{ transform: `translate3d(calc(${-index * 100}% + ${dragX}px), 0, 0)`, transition: isDragging ? "none" : "transform 600ms cubic-bezier(0.22, 1, 0.36, 1)" }}>
                         {slides.map((slide, i) => (
                             <div key={`${i}-${slide.src}`} role="group" aria-roledescription="slide" aria-label={`${i + 1} of ${slides.length}`} aria-hidden={i !== index} className="relative h-[300px] w-full shrink-0 sm:h-[420px] md:h-[480px] lg:h-[560px]">
-                                {/* Floor glow */}
-                                {slide.fit === "contain" && (
+                                {i === 0 && (
                                     <div className="absolute inset-x-8 bottom-5 h-10 rounded-full bg-[#BF980D]/20 blur-3xl sm:inset-x-16" />
                                 )}
 
-                                <Image src={slide.src} alt={slide.alt} fill priority={i === 0} sizes="(min-width: 1024px) 60vw, (min-width: 640px) 90vw, 100vw" draggable={false} className={`relative z-10 ${slide.fit === "contain" ? "object-contain p-4 sm:p-6" : "object-cover"}`} />
+                                {slide.type === "image" ? (
+                                    <Image
+                                        src={slide.src}
+                                        alt={slide.alt}
+                                        fill
+                                        priority={i === 0}
+                                        sizes="(min-width: 1024px) 60vw, (min-width: 640px) 90vw, 100vw"
+                                        draggable={false}
+                                        className={`relative z-10 ${i === 0 ? "object-contain p-4 sm:p-6" : "object-cover"}`}
+                                    />
+                                ) : (
+                                    <video
+                                        ref={(el) => { videoRefs.current[i] = el; }}
+                                        src={slide.src}
+                                        poster={slide.poster}
+                                        muted
+                                        loop={slide.length === "short"}
+                                        playsInline
+                                        controls={slide.length === "long"}
+                                        preload="metadata"
+                                        className="relative z-10 h-full w-full object-cover"
+                                    />
+                                )}
+
+                                {slide.type === "video" && slide.duration && (
+                                    <span className="pointer-events-none absolute left-3 top-3 z-20 rounded-full border border-white/10 bg-black/60 px-2.5 py-1 text-[10px] font-semibold uppercase tracking-wide text-white backdrop-blur-md">
+                                        {slide.length === "long" ? "Full walkthrough" : "Clip"} · {slide.duration}
+                                    </span>
+                                )}
                             </div>
                         ))}
                     </div>
                 </div>
 
                 {/* PREVIOUS BUTTON */}
-                <button type="button" onClick={goPrevious} aria-label="Previous photo" className={`absolute left-2 top-1/2 z-20 flex h-10 w-10 -translate-y-1/2 items-center justify-center rounded-full border border-white/15 bg-black/60 text-white backdrop-blur-xl transition-all duration-300 hover:border-[#BF980D] hover:bg-[#BF980D] hover:text-black active:scale-95 sm:left-4 sm:h-11 sm:w-11 ${focusRing}`}>
+                <button type="button" onClick={goPrevious} aria-label="Previous item" className={`absolute left-2 top-1/2 z-20 flex h-10 w-10 -translate-y-1/2 items-center justify-center rounded-full border border-white/15 bg-black/60 text-white backdrop-blur-xl transition-all duration-300 hover:border-[#BF980D] hover:bg-[#BF980D] hover:text-black active:scale-95 sm:left-4 sm:h-11 sm:w-11 ${focusRing}`}>
                     <ArrowLeft size={18} />
                 </button>
 
                 {/* NEXT BUTTON */}
-                <button type="button" onClick={goNext} aria-label="Next photo" className={`absolute right-2 top-1/2 z-20 flex h-10 w-10 -translate-y-1/2 items-center justify-center rounded-full border border-white/15 bg-black/60 text-white backdrop-blur-xl transition-all duration-300 hover:border-[#BF980D] hover:bg-[#BF980D] hover:text-black active:scale-95 sm:right-4 sm:h-11 sm:w-11 ${focusRing}`}>
+                <button type="button" onClick={goNext} aria-label="Next item" className={`absolute right-2 top-1/2 z-20 flex h-10 w-10 -translate-y-1/2 items-center justify-center rounded-full border border-white/15 bg-black/60 text-white backdrop-blur-xl transition-all duration-300 hover:border-[#BF980D] hover:bg-[#BF980D] hover:text-black active:scale-95 sm:right-4 sm:h-11 sm:w-11 ${focusRing}`}>
                     <ArrowRight size={18} />
                 </button>
+
+                {/* PLAY/PAUSE (long video only — short clips autoplay/loop silently) */}
+                {activeSlide.type === "video" && activeSlide.length === "long" && (
+                    <button type="button" onClick={togglePlayback} aria-label={isPlaying ? "Pause video" : "Play video"} className={`absolute bottom-3 left-3 z-20 flex h-10 w-10 items-center justify-center rounded-full border border-white/15 bg-black/60 text-white backdrop-blur-xl transition-all duration-300 hover:border-[#BF980D] hover:bg-[#BF980D] hover:text-black active:scale-95 sm:bottom-4 sm:left-4 ${focusRing}`}>
+                        {isPlaying ? <Pause size={16} /> : <Play size={16} />}
+                    </button>
+                )}
 
                 {/* COUNTER */}
                 <div className="pointer-events-none absolute bottom-3 right-3 z-20 rounded-full border border-white/10 bg-black/60 px-3 py-1.5 text-[11px] font-semibold text-white backdrop-blur-md sm:bottom-4 sm:right-4">
@@ -147,10 +194,16 @@ function CarGallery({ carName, carImage, images }: { carName: string; carImage: 
             <div ref={stripRef} className="relative mt-3 flex gap-2 overflow-x-auto pb-1 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden sm:mt-4 sm:gap-3">
                 {slides.map((slide, i) => {
                     const isActive = i === index;
+                    const thumbImage = slide.type === "image" ? slide.src : slide.poster ?? slide.src;
 
                     return (
-                        <button key={`${i}-${slide.src}`} ref={(el) => { thumbRefs.current[i] = el; }} type="button" onClick={() => setIndex(i)} aria-label={`Show photo ${i + 1}`} aria-current={isActive} className={`relative h-14 w-20 shrink-0 overflow-hidden rounded-lg border bg-[#111111] transition-all duration-300 sm:h-20 sm:w-28 ${isActive ? "border-[#BF980D] opacity-100 ring-1 ring-[#BF980D]/30" : "border-white/10 opacity-50 hover:border-white/20 hover:opacity-100"} ${focusRing}`}>
-                            <Image src={slide.src} alt="" fill sizes="112px" className={slide.fit === "contain" ? "object-contain p-1" : "object-cover"} />
+                        <button key={`${i}-${slide.src}`} ref={(el) => { thumbRefs.current[i] = el; }} type="button" onClick={() => setIndex(i)} aria-label={`Show item ${i + 1}`} aria-current={isActive} className={`relative h-14 w-20 shrink-0 overflow-hidden rounded-lg border bg-[#111111] transition-all duration-300 sm:h-20 sm:w-28 ${isActive ? "border-[#BF980D] opacity-100 ring-1 ring-[#BF980D]/30" : "border-white/10 opacity-50 hover:border-white/20 hover:opacity-100"} ${focusRing}`}>
+                            <Image src={thumbImage} alt="" fill sizes="112px" className={i === 0 ? "object-contain p-1" : "object-cover"} />
+                            {slide.type === "video" && (
+                                <span className="absolute inset-0 z-10 flex items-center justify-center bg-black/30">
+                                    <Play size={16} className="fill-white text-white" />
+                                </span>
+                            )}
                         </button>
                     );
                 })}
@@ -190,7 +243,7 @@ export default function CarDetailsPage() {
     }, [id]);
 
     const car = id ? cars.find((item) => item.id === Number(id)) : undefined;
-    const carImage = car?.image || galleryImages[0];
+    const carImage = car?.image || showroomGalleryMedia[0]?.src || "";
 
     if (isLoading) {
         return (
@@ -247,7 +300,6 @@ export default function CarDetailsPage() {
     return (
         <>
             <Navbar />
-
             <main className="min-h-screen bg-[#191610] text-white">
                 <div className="mx-auto max-w-7xl px-4 py-8 sm:px-6 sm:py-10 lg:px-8">
                     {/* Back */}
@@ -259,7 +311,7 @@ export default function CarDetailsPage() {
                     {/* Vehicle Area */}
                     <div className="mt-6 grid gap-6 lg:mt-8 lg:grid-cols-[1.2fr_0.8fr] lg:gap-8 lg:items-start">
                         {/* Gallery */}
-                        <CarGallery carName={car.name} carImage={carImage} images={galleryImages} />
+                        <CarGallery carName={car.name} carImage={carImage} media={car.galleryMedia} />
 
                         {/* Vehicle Info */}
                         <aside className="rounded-[28px] border border-[#BF980D]/20 bg-[#120f0d] p-5 shadow-[0_25px_80px_rgba(0,0,0,0.35)] sm:p-6 lg:sticky lg:top-24">

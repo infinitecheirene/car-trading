@@ -9,15 +9,18 @@ import Navbar from "../../components/layout/navbar";
 import Footer from "../../components/layout/footer";
 import { cars } from "../../data/cars";
 
-const getPriceValue = (price: string) => Number(price.replace(/[$,]/g, ""));
+const getPriceValue = (price: string) => Number(price.replace(/[₱,]/g, ""));
 
 export default function ShowroomPage() {
     const [search, setSearch] = useState("");
     const [selectedModel, setSelectedModel] = useState("all");
     const [sortOrder, setSortOrder] = useState("newest");
     const [priceRange, setPriceRange] = useState("all");
+    const [currentPage, setCurrentPage] = useState(1);
     const [isLoading, setIsLoading] = useState(true);
     const [loadError, setLoadError] = useState<string | null>(null);
+
+    const carsPerPage = 8;
 
     useEffect(() => {
         const timer = window.setTimeout(() => {
@@ -87,6 +90,21 @@ export default function ShowroomPage() {
             return 0;
         });
     }, [search, selectedModel, sortOrder, priceRange]);
+
+    const totalPages = Math.max(1, Math.ceil(filteredCars.length / carsPerPage));
+
+    useEffect(() => {
+        setCurrentPage((page) => Math.min(page, totalPages));
+    }, [filteredCars.length, totalPages]);
+
+    useEffect(() => {
+        setCurrentPage(1);
+    }, [search, selectedModel, sortOrder, priceRange]);
+
+    const paginatedCars = useMemo(() => {
+        const start = (currentPage - 1) * carsPerPage;
+        return filteredCars.slice(start, start + carsPerPage);
+    }, [filteredCars, currentPage]);
 
     const clearFilters = () => {
         setSearch("");
@@ -159,6 +177,7 @@ export default function ShowroomPage() {
                         <div className="grid gap-3 lg:grid-cols-[1.4fr_1fr_1fr_1fr_auto]">
                             <label className="flex items-center gap-3 rounded-2xl border border-white/10 bg-black/20 px-4 py-3 text-sm text-zinc-300">
                                 <Search size={16} className="text-[#BF980D]" />
+
                                 <input
                                     value={search}
                                     onChange={(event) => setSearch(event.target.value)}
@@ -173,7 +192,11 @@ export default function ShowroomPage() {
                                 className="rounded-2xl border border-white/10 bg-black/20 px-4 py-3 text-sm text-white outline-none focus:border-[#BF980D]"
                             >
                                 {modelOptions.map((model) => (
-                                    <option key={model} value={model} className="bg-[#120f0d]">
+                                    <option
+                                        key={model}
+                                        value={model}
+                                        className="bg-[#120f0d]"
+                                    >
                                         {model === "all" ? "All models" : model}
                                     </option>
                                 ))}
@@ -184,10 +207,18 @@ export default function ShowroomPage() {
                                 onChange={(event) => setSortOrder(event.target.value)}
                                 className="rounded-2xl border border-white/10 bg-black/20 px-4 py-3 text-sm text-white outline-none focus:border-[#BF980D]"
                             >
-                                <option value="newest" className="bg-[#120f0d]">Newest first</option>
-                                <option value="oldest" className="bg-[#120f0d]">Oldest first</option>
-                                <option value="price-low" className="bg-[#120f0d]">Price: low to high</option>
-                                <option value="price-high" className="bg-[#120f0d]">Price: high to low</option>
+                                <option value="newest" className="bg-[#120f0d]">
+                                    Newest first
+                                </option>
+                                <option value="oldest" className="bg-[#120f0d]">
+                                    Oldest first
+                                </option>
+                                <option value="price-low" className="bg-[#120f0d]">
+                                    Price: low to high
+                                </option>
+                                <option value="price-high" className="bg-[#120f0d]">
+                                    Price: high to low
+                                </option>
                             </select>
 
                             <select
@@ -195,20 +226,34 @@ export default function ShowroomPage() {
                                 onChange={(event) => setPriceRange(event.target.value)}
                                 className="rounded-2xl border border-white/10 bg-black/20 px-4 py-3 text-sm text-white outline-none focus:border-[#BF980D]"
                             >
-                                <option value="all" className="bg-[#120f0d]">All price ranges</option>
-                                <option value="under-50k" className="bg-[#120f0d]">Under $50k</option>
-                                <option value="50k-70k" className="bg-[#120f0d]">$50k - $70k</option>
-                                <option value="70k-plus" className="bg-[#120f0d]">$70k+</option>
+                                <option value="all" className="bg-[#120f0d]">
+                                    All price ranges
+                                </option>
+                                <option value="under-50k" className="bg-[#120f0d]">
+                                    Under ₱50k
+                                </option>
+                                <option value="50k-70k" className="bg-[#120f0d]">
+                                    ₱50k - ₱70k
+                                </option>
+                                <option value="70k-plus" className="bg-[#120f0d]">
+                                    ₱70k+
+                                </option>
                             </select>
 
-                            <button
-                                type="button"
-                                onClick={clearFilters}
-                                className="inline-flex items-center justify-center gap-2 rounded-2xl border border-white/10 bg-transparent px-4 py-3 text-sm font-semibold text-zinc-200 transition-colors hover:border-[#BF980D] hover:text-[#BF980D]"
-                            >
-                                <X size={15} />
-                                Clear
-                            </button>
+                            {/* Only show when a filter is active */}
+                            {(search.trim() !== "" ||
+                                selectedModel !== "all" ||
+                                priceRange !== "all" ||
+                                sortOrder !== "newest") && (
+                                    <button
+                                        type="button"
+                                        onClick={clearFilters}
+                                        className="inline-flex items-center justify-center gap-2 rounded-2xl border border-white/10 bg-transparent px-4 py-3 text-sm font-semibold text-zinc-200 transition-colors hover:border-[#BF980D] hover:text-[#BF980D]"
+                                    >
+                                        <X size={15} />
+                                        Clear
+                                    </button>
+                                )}
                         </div>
                     </div>
 
@@ -247,62 +292,103 @@ export default function ShowroomPage() {
                             </button>
                         </div>
                     ) : (
-                        <div className="grid gap-6 md:grid-cols-2 xl:grid-cols-4">
-                            {filteredCars.map((car) => (
-                                <Link
-                                    key={car.id}
-                                    href={`/showroom/car/${car.id}`}
-                                    className="group overflow-hidden rounded-[26px] border border-white/10 bg-[#12110f] transition-all duration-300 hover:-translate-y-1 hover:border-[#BF980D]/50 hover:shadow-[0_25px_60px_rgba(191,152,13,0.12)]"
-                                >
-                                    <div className="relative overflow-hidden bg-[#0d0d0d] p-3">
-                                        <div className="absolute right-4 top-4 rounded-full border border-[#BF980D]/40 bg-[#BF980D]/10 px-2.5 py-1 text-[10px] font-bold uppercase tracking-[0.18em] text-[#F3D77A]">
-                                            {car.badge}
+                        <>
+                            <div className="grid gap-6 md:grid-cols-2 xl:grid-cols-4">
+                                {paginatedCars.map((car) => (
+                                    <Link
+                                        key={car.id}
+                                        href={`/showroom/car/${car.id}`}
+                                        className="group overflow-hidden rounded-[26px] border border-white/10 bg-[#12110f] transition-all duration-300 hover:-translate-y-1 hover:border-[#BF980D]/50 hover:shadow-[0_25px_60px_rgba(191,152,13,0.12)]"
+                                    >
+                                        <div className="relative overflow-hidden bg-[#0d0d0d] p-3">
+                                            <div className="absolute right-4 top-4 rounded-full border border-[#BF980D]/40 bg-[#BF980D]/10 px-2.5 py-1 text-[10px] font-bold uppercase tracking-[0.18em] text-[#F3D77A]">
+                                                {car.badge}
+                                            </div>
+                                            <Image
+                                                src={car.image}
+                                                alt={car.name}
+                                                width={800}
+                                                height={500}
+                                                className="h-52 w-full object-contain transition-transform duration-500 group-hover:scale-105"
+                                            />
                                         </div>
-                                        <Image
-                                            src={car.image}
-                                            alt={car.name}
-                                            width={800}
-                                            height={500}
-                                            className="h-52 w-full object-contain transition-transform duration-500 group-hover:scale-105"
-                                        />
-                                    </div>
 
-                                    <div className="space-y-4 p-5">
-                                        <div className="flex items-center justify-between gap-3">
-                                            <div>
-                                                <p className="text-xs uppercase tracking-[0.18em] text-zinc-400">
-                                                    {car.year} • {car.type}
-                                                </p>
-                                                <h3 className="mt-2 text-2xl font-bold text-white">{car.name}</h3>
+                                        <div className="space-y-2 p-5">
+                                            <div className="flex items-center justify-between gap-3">
+                                                <div>
+                                                    <p className="text-xs uppercase tracking-[0.18em] text-zinc-400">
+                                                        {car.year} • {car.type}
+                                                    </p>
+                                                    <h3 className="mt-1 text-2xl font-semibold text-white">{car.name}</h3>
+                                                </div>
                                             </div>
                                             <span className="text-base font-black text-[#BF980D]">{car.price}</span>
-                                        </div>
 
-                                        <div className="grid grid-cols-2 gap-3 text-sm text-zinc-300">
-                                            <div className="rounded-xl border border-white/10 bg-white/3 p-3">
-                                                <span className="block text-[10px] uppercase tracking-[0.18em] text-zinc-400">Mileage</span>
-                                                <span className="mt-2 block font-semibold text-white">{car.mileage}</span>
+                                            <div className="grid grid-cols-2 gap-3 text-sm text-zinc-300 my-5">
+                                                <div className="rounded-xl border border-white/10 bg-white/3 p-3">
+                                                    <span className="block text-[10px] uppercase tracking-[0.18em] text-zinc-400">Mileage</span>
+                                                    <span className="mt-2 block font-semibold text-white">{car.mileage}</span>
+                                                </div>
+                                                <div className="rounded-xl border border-white/10 bg-white/3 p-3">
+                                                    <span className="block text-[10px] uppercase tracking-[0.18em] text-zinc-400">Engine</span>
+                                                    <span className="mt-2 block font-semibold text-white">{car.engine}</span>
+                                                </div>
                                             </div>
-                                            <div className="rounded-xl border border-white/10 bg-white/3 p-3">
-                                                <span className="block text-[10px] uppercase tracking-[0.18em] text-zinc-400">Engine</span>
-                                                <span className="mt-2 block font-semibold text-white">{car.engine}</span>
-                                            </div>
-                                        </div>
 
-                                        <div className="flex items-center justify-between border-t border-white/10 pt-4 text-sm text-zinc-300">
-                                            <span className="inline-flex items-center gap-2">
-                                                <MapPin size={14} className="text-[#BF980D]" />
-                                                {car.location}
-                                            </span>
-                                            <span className="inline-flex items-center gap-2 font-semibold text-[#BF980D]">
-                                                Details
-                                                <ArrowRight size={16} className="transition-transform duration-300 group-hover:translate-x-1" />
-                                            </span>
+                                            <div className="flex items-center justify-between border-t border-white/10 pt-4 text-sm text-zinc-300">
+                                                <span className="inline-flex items-center gap-2">
+                                                    <MapPin size={14} className="text-[#BF980D]" />
+                                                    {car.location}
+                                                </span>
+                                                <span className="inline-flex items-center gap-2 font-semibold text-[#BF980D]">
+                                                    Details
+                                                    <ArrowRight size={16} className="transition-transform duration-300 group-hover:translate-x-1" />
+                                                </span>
+                                            </div>
                                         </div>
+                                    </Link>
+                                ))}
+                            </div>
+
+                            {filteredCars.length > carsPerPage && (
+                                <div className="mt-8 flex items-center justify-center gap-3">
+                                    <button
+                                        type="button"
+                                        onClick={() => setCurrentPage((page) => Math.max(1, page - 1))}
+                                        disabled={currentPage === 1}
+                                        className="inline-flex items-center justify-center rounded-full border border-white/10 bg-white/5 px-4 py-2 text-sm font-medium text-white transition-colors hover:border-[#BF980D] hover:text-[#F3D77A] disabled:cursor-not-allowed disabled:opacity-40"
+                                    >
+                                        Previous
+                                    </button>
+
+                                    <div className="flex items-center gap-2">
+                                        {Array.from({ length: totalPages }, (_, index) => index + 1).map((page) => (
+                                            <button
+                                                key={page}
+                                                type="button"
+                                                onClick={() => setCurrentPage(page)}
+                                                className={`flex h-10 w-10 items-center justify-center rounded-full text-sm font-semibold transition-all ${
+                                                    currentPage === page
+                                                        ? "bg-[#BF980D] text-black"
+                                                        : "border border-white/10 bg-white/5 text-white hover:border-[#BF980D] hover:text-[#F3D77A]"
+                                                }`}
+                                            >
+                                                {page}
+                                            </button>
+                                        ))}
                                     </div>
-                                </Link>
-                            ))}
-                        </div>
+
+                                    <button
+                                        type="button"
+                                        onClick={() => setCurrentPage((page) => Math.min(totalPages, page + 1))}
+                                        disabled={currentPage === totalPages}
+                                        className="inline-flex items-center justify-center rounded-full border border-white/10 bg-white/5 px-4 py-2 text-sm font-medium text-white transition-colors hover:border-[#BF980D] hover:text-[#F3D77A] disabled:cursor-not-allowed disabled:opacity-40"
+                                    >
+                                        Next
+                                    </button>
+                                </div>
+                            )}
+                        </>
                     )}
                 </section>
 
@@ -322,8 +408,8 @@ export default function ShowroomPage() {
                             </div>
                             <div className="rounded-2xl border border-white/10 bg-white/5 p-5">
                                 <div className="flex gap-2 items-center">
-                                <Sparkles className="text-[#BF980D]" size={22} />
-                                <h4 className="text-xl font-bold text-white">Transparent pricing</h4>
+                                    <Sparkles className="text-[#BF980D]" size={22} />
+                                    <h4 className="text-xl font-bold text-white">Transparent pricing</h4>
                                 </div>
                                 <p className="mt-2 text-md leading-6 text-zinc-300">No hidden surprises—just clear value, competitive pricing, and straightforward buying guidance.</p>
                             </div>

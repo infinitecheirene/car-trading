@@ -1,3 +1,5 @@
+import { buildCarGalleryMedia, type GalleryMedia } from "./gallery-media";
+
 export type Car = {
   id: number;
   name: string;
@@ -13,6 +15,7 @@ export type Car = {
   badge: string;
   description: string;
   image: string;
+  galleryMedia: GalleryMedia[];
 };
 
 export const cars: Car[] = [
@@ -25,13 +28,14 @@ export const cars: Car[] = [
     engine: "3.0L Twin-Turbo",
     horsepower: "382 hp",
     transmission: "Automatic",
-    price: "$46,900",
+    price: "₱46,900",
     location: "Manila",
     fuel: "Petrol",
     badge: "Luxury Preferred",
     description:
       "A refined executive sedan with confident acceleration, a quiet cabin, and the kind of premium details that make every drive feel exceptional.",
     image: "/bmw-series-5.png",
+    galleryMedia: buildCarGalleryMedia("BMW 5 Series"),
   },
   {
     id: 2,
@@ -42,13 +46,14 @@ export const cars: Car[] = [
     engine: "2.0L Turbo",
     horsepower: "255 hp",
     transmission: "Automatic",
-    price: "$41,200",
+    price: "₱41,200",
     location: "Taguig",
     fuel: "Petrol",
     badge: "Certified",
     description:
       "Designed for elegance and everyday comfort, this C-Class combines modern tech with muscular styling and responsive city-to-highway performance.",
     image: "/mercedes-c-class.png",
+    galleryMedia: buildCarGalleryMedia("Mercedes-Benz C-Class"),
   },
   {
     id: 3,
@@ -59,13 +64,14 @@ export const cars: Car[] = [
     engine: "3.0L V6",
     horsepower: "348 hp",
     transmission: "Automatic",
-    price: "$68,400",
+    price: "₱68,400",
     location: "Quezon City",
     fuel: "Petrol",
     badge: "Performance",
     description:
       "A bold luxury SUV with striking road presence, intelligent handling, and enough versatility for both weekend escapes and daily family driving.",
     image: "/porsche-cayenne.png",
+    galleryMedia: buildCarGalleryMedia("Porsche Cayenne"),
   },
   {
     id: 4,
@@ -76,12 +82,13 @@ export const cars: Car[] = [
     engine: "3.0L Supercharged",
     horsepower: "355 hp",
     transmission: "Automatic",
-    price: "$63,800",
+    price: "₱63,800",
     location: "Cebu",
     fuel: "Petrol",
     badge: "Adventure Ready",
     description:
       "Luxury, capability, and commanding comfort combine in this versatile SUV, built to move from city streets to scenic routes with ease.",
     image: "/range-rover-sport.png",
+    galleryMedia: buildCarGalleryMedia("Range Rover Sport"),
   },
 ];

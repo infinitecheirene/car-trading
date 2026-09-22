@@ -8,9 +8,9 @@ import { ArrowRight, CarFront, Menu, Phone, X } from "lucide-react";
 const navigation = [
     { name: "Home", href: "/" },
     { name: "Showroom", href: "/showroom" },
-    { name: "Sell / Trade", href: "/sell-your-car" },
-    { name: "Financing", href: "/financing" },
+    { name: "Sell / Trade", href: "/sell-trade" },
     { name: "About", href: "/about" },
+    { name: "Contact", href: "/contact" },
 ];
 
 const HEADER_OFFSET = "-mb-[81px]";
@@ -32,10 +32,6 @@ export default function Navbar() {
 
     const isSolid = !isHome || isScrolled || isMenuOpen;
 
-    /* --------------------------------
-       Scroll detection
-    -------------------------------- */
-
     useEffect(() => {
         const handleScroll = () => setIsScrolled(window.scrollY > 24);
 
@@ -45,17 +41,9 @@ export default function Navbar() {
         return () => window.removeEventListener("scroll", handleScroll);
     }, []);
 
-    /* --------------------------------
-       Close menu on route change
-    -------------------------------- */
-
     useEffect(() => {
         setIsMenuOpen(false);
     }, [pathname]);
-
-    /* --------------------------------
-       Lock body scroll
-    -------------------------------- */
 
     useEffect(() => {
         if (!isMenuOpen) return;
@@ -105,7 +93,6 @@ export default function Navbar() {
                         </Link>
 
                         {/* DESKTOP NAVIGATION */}
-
                         <div className="hidden h-full lg:flex">
                             {navigation.map((item) => {
                                 const active = isActive(item.href);
@@ -122,20 +109,7 @@ export default function Navbar() {
                             })}
                         </div>
 
-                        <div className="hidden justify-self-end lg:block">
-                            <Link href="/contact" className={`inline-flex items-center gap-2 rounded-full border border-[#BF980D]/70 bg-black/30 px-5 py-2.5 text-sm font-semibold text-white backdrop-blur-md transition-all duration-300 hover:border-[#BF980D] hover:bg-[#BF980D] hover:text-black ${focusRing}`}>
-                                <Phone size={15} />
-                                Contact
-                            </Link>
-                        </div>
-
                         <div className="ml-auto flex items-center gap-2 lg:hidden">
-                            {/* Tablet Contact */}
-                            <Link href="/contact" className={`hidden items-center gap-2 rounded-full border border-[#BF980D]/50 bg-[#BF980D]/10 px-4 py-2 text-sm font-semibold text-[#F3D77A] transition-all duration-300 hover:border-[#BF980D] hover:bg-[#BF980D] hover:text-black sm:inline-flex ${focusRing}`}>
-                                <Phone size={14} />
-                                Contact
-                            </Link>
-
                             {/* Mobile / Tablet Menu */}
                             <button type="button" aria-label={isMenuOpen ? "Close menu" : "Open menu"} aria-expanded={isMenuOpen} aria-controls="mobile-menu" onClick={() => setIsMenuOpen((open) => !open)} className={`flex h-11 w-11 sm:h-12 sm:w-12 items-center justify-center rounded-full border ${isMenuOpen ? "border-[#BF980D]/60 bg-[#BF980D]/10 text-[#F3D77A]" : "border-white/15 bg-black/30 text-white"} backdrop-blur-md shadow-[0_10px_30px_rgba(0,0,0,0.25)] transition-all duration-300 hover:border-[#BF980D] ${focusRing}`}>
                                 {isMenuOpen ? <X size={21} strokeWidth={2} /> : <Menu size={21} strokeWidth={2} />}
@@ -146,7 +120,6 @@ export default function Navbar() {
             </header>
 
             {/* MOBILE / TABLET MENU */}
-
             <div id="mobile-menu" aria-hidden={!isMenuOpen} className={`fixed inset-0 z-40 lg:hidden transition-all duration-500 ${isMenuOpen ? "visible opacity-100" : "invisible opacity-0"}`}>
                 {/* Backdrop */}
                 <button type="button" aria-label="Close navigation" onClick={() => setIsMenuOpen(false)} className="absolute inset-0 cursor-default bg-black/70 backdrop-blur-md" />
@@ -205,35 +178,6 @@ export default function Navbar() {
                                 })}
                             </ul>
                         </nav>
-
-                        {/* Bottom CTA */}
-                        <div style={{ transitionDelay: isMenuOpen ? `${100 + navigation.length * 55}ms` : "0ms" }} className={`mt-auto pt-8 transition-all duration-500 ${isMenuOpen ? "translate-y-0 opacity-100" : "translate-y-5 opacity-0"}`}>
-                            <div className="relative overflow-hidden rounded-2xl border border-[#BF980D]/20 bg-[#BF980D]/[0.06] p-5">
-                                {/* Glow */}
-                                <div className="pointer-events-none absolute -right-16 -top-16 h-32 w-32 rounded-full bg-[#BF980D]/10 blur-3xl" />
-
-                                <div className="relative">
-                                    <div className="mb-2 text-xs font-semibold uppercase tracking-[0.2em] text-[#BF980D]">
-                                        Ready to drive?
-                                    </div>
-
-                                    <p className="max-w-xs text-sm leading-6 text-zinc-400">
-                                        Browse our collection or speak with our team about your next vehicle.
-                                    </p>
-
-                                    <Link href="/contact" onClick={() => setIsMenuOpen(false)} className={`mt-5 flex w-full items-center justify-center gap-2 rounded-full bg-[#BF980D] px-6 py-3.5 text-sm font-bold text-black shadow-[0_15px_35px_rgba(191,152,13,0.2)] transition-all duration-300 hover:bg-[#d5b443] hover:shadow-[0_18px_45px_rgba(191,152,13,0.3)] ${focusRing}`}>
-                                        <Phone size={16} />
-                                        Contact Us
-                                        <ArrowRight size={15} />
-                                    </Link>
-                                </div>
-                            </div>
-
-                            {/* Small footer text */}
-                            <p className="mt-5 text-center text-[10px] uppercase tracking-[0.2em] text-zinc-600">
-                                Premium Automotive
-                            </p>
-                        </div>
                     </div>
                 </div>
             </div>

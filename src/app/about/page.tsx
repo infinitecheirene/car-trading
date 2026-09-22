@@ -13,6 +13,7 @@ import {
 
 import Navbar from "../../components/layout/navbar";
 import Footer from "../../components/layout/footer";
+import CTA from "../../components/home/cta";
 
 const stats = [
     { value: "12+", label: "Years of expertise" },
@@ -57,7 +58,7 @@ export default function About() {
                 <section className="relative overflow-hidden border-b border-[#BF980D]/20 bg-[#0d0b09]">
                     <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_top,_rgba(191,152,13,0.18),transparent_50%)]" />
 
-                    <div className="relative mx-auto max-w-7xl px-4 py-16 sm:px-6 lg:px-8 lg:pt-24">
+                    <div className="relative mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 lg:pt-24">
                         <div className="grid items-center gap-10 lg:grid-cols-[1.1fr_0.9fr]">
                             <div>
                                 <div className="mb-5 flex items-center gap-3">
@@ -76,23 +77,6 @@ export default function About() {
                                     AutoTrade was built for drivers who want more than a transaction.
                                     We bring together exceptional vehicles, honest advice, and a smoother path to ownership.
                                 </p>
-
-                                <div className="mt-8 flex flex-col gap-3 sm:flex-row">
-                                    <Link
-                                        href="/showroom"
-                                        className="inline-flex items-center justify-center gap-2 rounded-full bg-[#BF980D] px-6 py-3 text-sm font-semibold text-black transition-all duration-300 hover:bg-[#d4ad20]"
-                                    >
-                                        Browse showroom
-                                        <ArrowRight size={16} />
-                                    </Link>
-
-                                    <Link
-                                        href="/contact"
-                                        className="inline-flex items-center justify-center rounded-full border border-white/15 bg-white/5 px-6 py-3 text-sm font-semibold text-white transition-all duration-300 hover:border-[#BF980D]/60 hover:bg-white/10"
-                                    >
-                                        Talk to our team
-                                    </Link>
-                                </div>
                             </div>
 
                             <div className="rounded-[30px] border border-white/10 bg-[#120f0d] p-5 shadow-[0_30px_80px_rgba(0,0,0,0.35)] sm:p-7">
@@ -138,7 +122,7 @@ export default function About() {
                 </section>
 
                 <section className="mx-auto max-w-7xl px-4 py-16 sm:px-6 lg:px-8">
-                    <div className="grid gap-8 lg:grid-cols-[0.95fr_1.05fr] lg:items-center">
+                    <div className="grid gap-8 grid-cols-1 lg:grid-cols-2 lg:items-center">
                         <div className="rounded-[30px] border border-[#BF980D]/20 bg-[#120f0d] p-6 sm:p-8">
                             <div className="mb-6 flex items-center gap-3 text-[#BF980D]">
                                 <Award size={20} />
@@ -181,10 +165,8 @@ export default function About() {
                             </div>
                         </div>
                     </div>
-                </section>
 
-                <section className="border-y border-white/10 bg-[#0d0b09] py-16">
-                    <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+                    <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 pt-20">
                         <div className="mx-auto max-w-3xl text-center">
                             <div className="mb-5 flex items-center justify-center gap-3">
                                 <span className="h-px w-10 bg-[#BF980D]" />
@@ -206,14 +188,21 @@ export default function About() {
                                 return (
                                     <div
                                         key={value.title}
-                                        className="rounded-[26px] border border-white/10 bg-[#120f0d] p-6 transition-all duration-300 hover:border-[#BF980D]/50 hover:bg-[#15120f]"
+                                        className="group rounded-[26px] border border-white/10 bg-[#120f0d] p-6 transition-all duration-300 hover:border-[#BF980D]/50 hover:bg-[#15120f] hover:shadow-[0_15px_50px_rgba(0,0,0,0.25)]"
                                     >
-                                        <div className="flex h-12 w-12 items-center justify-center rounded-xl border border-[#BF980D]/30 bg-[#BF980D]/10 text-[#BF980D]">
-                                            <Icon size={22} />
+                                        <div className="flex items-center gap-4">
+                                            <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-xl border border-[#BF980D]/30 bg-[#BF980D]/10 text-[#BF980D] transition-all duration-300 group-hover:border-[#BF980D]/60 group-hover:bg-[#BF980D]/20">
+                                                <Icon size={22} />
+                                            </div>
+
+                                            <h3 className="text-md font-bold leading-tight text-white sm:text-xl">
+                                                {value.title}
+                                            </h3>
                                         </div>
 
-                                        <h3 className="mt-6 text-xl font-bold text-white">{value.title}</h3>
-                                        <p className="mt-3 text-sm leading-7 text-zinc-400">{value.description}</p>
+                                        <p className="mt-5 text-md leading-7 text-zinc-400">
+                                            {value.description}
+                                        </p>
                                     </div>
                                 );
                             })}
@@ -221,35 +210,8 @@ export default function About() {
                     </div>
                 </section>
 
-                <section className="bg-black py-16">
-                    <div className="mx-auto max-w-5xl px-4 text-center sm:px-6 lg:px-8">
-                        <div className="rounded-[30px] border border-[#BF980D]/25 bg-[#120f0d] px-6 py-10 sm:px-10">
-                            <p className="text-xs font-semibold uppercase tracking-[0.3em] text-[#BF980D]">
-                                Ready to begin
-                            </p>
-                            <h2 className="mt-5 text-3xl font-black tracking-tight text-white sm:text-4xl lg:text-5xl">
-                                Find the vehicle that matches your next chapter.
-                            </h2>
-                            <div className="mt-8 flex flex-col justify-center gap-3 sm:flex-row">
-                                <Link
-                                    href="/showroom"
-                                    className="inline-flex items-center justify-center gap-2 rounded-full bg-[#BF980D] px-6 py-3 text-sm font-semibold text-black transition-all duration-300 hover:bg-[#d4ad20]"
-                                >
-                                    Explore inventory
-                                    <ArrowRight size={16} />
-                                </Link>
-                                <Link
-                                    href="/contact"
-                                    className="inline-flex items-center justify-center rounded-full border border-white/15 bg-white/5 px-6 py-3 text-sm font-semibold text-white transition-all duration-300 hover:border-[#BF980D]/60 hover:bg-white/10"
-                                >
-                                    Contact us
-                                </Link>
-                            </div>
-                        </div>
-                    </div>
-                </section>
+                <CTA />
             </main>
-
             <Footer />
         </>
     );

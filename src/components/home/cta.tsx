@@ -17,14 +17,14 @@ export default function CTA() {
                     <span className="h-px w-10 bg-[#BF980D]" />
                 </div>
 
-                <h2 className="mx-auto mt-5 max-w-3xl font-display text-4xl font-semibold leading-tight text-white sm:text-5xl md:text-6xl">
+                <h2 className="text-4xl font-black tracking-tight text-white sm:text-5xl lg:text-6xl">
                     Ready to find your
                     <span className="block text-[#BF980D]">
                         next car?
                     </span>
                 </h2>
 
-                <p className="mx-auto mt-6 max-w-2xl text-base leading-7 text-zinc-400 md:text-lg">
+                <p className="mt-5 text-sm leading-7 text-[var(--muted)] sm:text-base">
                     Explore our collection or speak with our team about
                     finding the right vehicle for you.
                 </p>

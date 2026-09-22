@@ -1,11 +1,13 @@
 "use client";
 
 import Link from "next/link";
+import { useState } from "react";
 import {
     Mail,
     MapPin,
     Phone,
     CarFront,
+    X,
 } from "lucide-react";
 
 const FacebookIcon = ({ className }: { className?: string }) => (
@@ -24,9 +26,33 @@ const InstagramIcon = ({ className }: { className?: string }) => (
 
 const focusRing = "focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#BF980D]";
 
+const legalCopy = {
+    privacy: {
+        title: "Privacy Policy",
+        body: [
+            "At AutoTrade, we value your trust and are committed to protecting your personal information. We collect details you provide when contacting us, requesting a valuation, or browsing our inventory.",
+            "This information may be used to respond to enquiries, process vehicle transactions, improve our services, and communicate relevant updates. We do not sell your personal data to third parties for marketing purposes.",
+            "We may use secure third-party tools to help operate our website, manage customer interactions, and improve the user experience. These partners are expected to handle your information with appropriate safeguards.",
+            "You have the right to request access to, correction of, or deletion of your personal data, subject to legal and operational requirements. If you have any concerns, please contact our team directly.",
+        ],
+    },
+    terms: {
+        title: "Terms & Conditions",
+        body: [
+            "By using the AutoTrade website, you agree to interact with our platform in a lawful and respectful manner. All content, imagery, and information presented here are intended for general information and marketing purposes only.",
+            "Vehicle listings, prices, availability, and specifications may change without notice. We make every effort to keep information accurate, but final pricing and availability are subject to confirmation at the time of sale or trade-in.",
+            "Any enquiry, test drive, sale, or trade-in arrangement is subject to verification, documentation, and acceptance by AutoTrade. We reserve the right to decline or withdraw offers at our discretion when required by policy, legality, or business considerations.",
+            "Customers are responsible for ensuring that the information they provide is accurate and complete. AutoTrade shall not be liable for losses arising from reliance on outdated or incorrect information provided by third parties or by users of the site.",
+        ],
+    },
+} as const;
+
 export default function Footer() {
+    const [activeModal, setActiveModal] = useState<"privacy" | "terms" | null>(null);
+
     return (
-        <footer className="border-t bg-[#051524]/80 text-white border-[#BF980D]">
+        <>
+            <footer className="border-t bg-[#080b0f]/90 text-white border-[#BF980D]">
             <div className="mx-auto max-w-7xl px-5 sm:px-6 lg:px-8">
                 {/* Main Footer */}
                 <div className="grid gap-12 py-14 md:grid-cols-2 lg:grid-cols-4 lg:py-16">
@@ -174,15 +200,18 @@ export default function Footer() {
                             <div className="flex gap-3">
                                 <MapPin className="mt-0.5 size-4 shrink-0 text-[#BF980D]" />
 
-                                <span className="leading-6 text-zinc-400">
+                                <a
+                                    href=""
+                                    className="flex items-center gap-3 text-zinc-400 transition-colors hover:text-[#BF980D]"
+                                >
                                     Your showroom address
                                     <br />
                                     Your City, Philippines
-                                </span>
+                                </a>
                             </div>
 
                             <a
-                                href="tel:+630000000000"
+                                href="tel:"
                                 className="flex items-center gap-3 text-zinc-400 transition-colors hover:text-[#BF980D]"
                             >
                                 <Phone className="size-4 text-[#BF980D]" />
@@ -190,7 +219,7 @@ export default function Footer() {
                             </a>
 
                             <a
-                                href="mailto:hello@autotrade.com"
+                                href="mailto:"
                                 className="flex items-center gap-3 text-zinc-400 transition-colors hover:text-[#BF980D]"
                             >
                                 <Mail className="size-4 text-[#BF980D]" />
@@ -202,28 +231,67 @@ export default function Footer() {
 
                 {/* Bottom */}
                 <div className="flex flex-col gap-4 border-t border-white/10 py-6 text-center text-xs text-zinc-500 sm:flex-row sm:items-center sm:justify-between sm:text-left">
-                    <p>
-                        &copy; {new Date().getFullYear()} AutoTrade. All rights
-                        reserved.
-                    </p>
+                    <div className="space-y-1">
+                        <p>
+                            &copy; {new Date().getFullYear()} AutoTrade. All rights
+                            reserved.
+                        </p>
+                        <span>
+                            Powered by{" "}
+                            <Link
+                                href="https://www.infinitechphil.com/"
+                                className="transition-colors hover:text-[#BF980D]">
+                                Infinitech Advertising Corporation
+                            </Link>
+                        </span>
+                    </div>
 
                     <div className="flex justify-center gap-5 sm:justify-end">
-                        <Link
-                            href="/privacy-policy"
+                        <button
+                            type="button"
+                            onClick={() => setActiveModal("privacy")}
                             className="transition-colors hover:text-[#BF980D]"
                         >
                             Privacy Policy
-                        </Link>
+                        </button>
 
-                        <Link
-                            href="/terms"
+                        <button
+                            type="button"
+                            onClick={() => setActiveModal("terms")}
                             className="transition-colors hover:text-[#BF980D]"
                         >
                             Terms & Conditions
-                        </Link>
+                        </button>
                     </div>
                 </div>
             </div>
         </footer>
+
+        {activeModal && (
+            <div className="fixed inset-0 z-[60] flex items-center justify-center bg-black/70 p-4 backdrop-blur-sm">
+                <div className="max-h-[85vh] w-full max-w-2xl overflow-hidden rounded-[28px] border border-[#BF980D]/20 bg-[#120f0d] shadow-[0_30px_90px_rgba(0,0,0,0.5)]">
+                    <div className="flex items-center justify-between border-b border-white/10 px-5 py-4 sm:px-6">
+                        <h3 className="text-xl font-bold text-white">{legalCopy[activeModal].title}</h3>
+                        <button
+                            type="button"
+                            aria-label="Close dialog"
+                            onClick={() => setActiveModal(null)}
+                            className={`flex h-10 w-10 items-center justify-center rounded-full border border-white/10 bg-white/5 text-zinc-300 transition-all hover:border-[#BF980D] hover:text-[#F3D77A] ${focusRing}`}
+                        >
+                            <X size={18} />
+                        </button>
+                    </div>
+
+                    <div className="max-h-[70vh] overflow-y-auto px-5 py-5 text-sm leading-7 text-zinc-300 sm:px-6">
+                        {legalCopy[activeModal].body.map((paragraph) => (
+                            <p key={paragraph} className="mb-4">
+                                {paragraph}
+                            </p>
+                        ))}
+                    </div>
+                </div>
+            </div>
+        )}
+        </>
     );
 }

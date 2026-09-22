@@ -192,10 +192,10 @@ export default function ShowcaseSection() {
                                     "left-1/2 w-[92%] translate-x-[-50%] scale-100 opacity-100 blur-0 z-30 sm:w-[72%] lg:w-[65%]";
                             } else if (isLeft) {
                                 positionClass =
-                                    "left-[-18%] w-[58%] translate-x-0 scale-[0.72] opacity-35 blur-[8px] z-10 sm:left-[-12%] sm:w-[55%] sm:scale-[0.78] lg:left-[-8%] lg:w-[48%]";
+                                    "left-[-18%] w-[58%] translate-x-0 scale-[0.72] opacity-25 blur-[2px] z-10 sm:left-[-12%] sm:w-[55%] sm:scale-[0.78] lg:left-[-8%] lg:w-[48%]";
                             } else if (isRight) {
                                 positionClass =
-                                    "left-[118%] w-[58%] translate-x-[-100%] scale-[0.72] opacity-35 blur-[8px] z-10 sm:left-[112%] sm:w-[55%] sm:scale-[0.78] lg:left-[108%] lg:w-[48%]";
+                                    "left-[118%] w-[58%] translate-x-[-100%] scale-[0.72] opacity-25 blur-[2px] z-10 sm:left-[112%] sm:w-[55%] sm:scale-[0.78] lg:left-[108%] lg:w-[48%]";
                             } else {
                                 positionClass =
                                     "left-1/2 w-[50%] translate-x-[-50%] scale-[0.5] opacity-0 blur-[15px] z-0 pointer-events-none";
@@ -247,20 +247,14 @@ export default function ShowcaseSection() {
                     {/* Car Details */}
                     <div
                         key={`${activeCar.id}-${direction}`}
-                        className={`
-                            relative z-40
-                            mx-auto
-                            -mt-2
-                            max-w-3xl
-                            text-center
-                            sm:-mt-4
+                        className={`relative z-40 mx-auto mt-2 max-w-4xl text-center sm:-mt-4
                             ${direction === "next"
                                 ? "animate-[showcaseDetailsNext_500ms_ease-out]"
                                 : "animate-[showcaseDetailsPrev_500ms_ease-out]"
                             }
                         `}
                     >
-                        <div className="flex items-center justify-center gap-2 text-xs text-[var(--muted-soft)]">
+                        <div className="flex items-center justify-center gap-2 text-md text-[var(--muted-soft)]">
                             <span>{activeCar.year}</span>
                             <span>•</span>
                             <span>{activeCar.type}</span>
@@ -315,17 +309,12 @@ export default function ShowcaseSection() {
 
                         {/* CTA */}
                         <div className="mt-7">
-
                             <Link
                                 href={`/showroom/car/${activeCar.id}`}
                                 className="group inline-flex items-center gap-3 rounded-full border border-[#BF980D] px-6 py-3 text-sm font-semibold text-[#BF980D] transition-all duration-300 hover:scale-105 hover:bg-[#BF980D] hover:text-black"
                             >
                                 View Details
-
-                                <ArrowRight
-                                    size={16}
-                                    className="transition-transform duration-300 group-hover:translate-x-1"
-                                />
+                                <ArrowRight size={16} className="transition-transform duration-300 group-hover:translate-x-1"/>
                             </Link>
 
                         </div>
